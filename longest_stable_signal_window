@@ -1,0 +1,37 @@
+n = int(input())
+values = list(map(int, input().split()))
+k = int(input())
+
+max_dq = [0] * n
+min_dq = [0] * n
+max_head, max_tail = 0, 0
+min_head, min_tail = 0, 0
+
+left = 0
+best_len = 0
+best_start = 0
+
+for right in range(n):
+    while max_tail > max_head and values[max_dq[max_tail - 1]] <= values[right]:
+        max_tail -= 1
+    max_dq[max_tail] = right
+    max_tail += 1
+
+    while min_tail > min_head and values[min_dq[min_tail - 1]] >= values[right]:
+        min_tail -= 1
+    min_dq[min_tail] = right
+    min_tail += 1
+
+    while values[max_dq[max_head]] - values[min_dq[min_head]] > k:
+        left += 1
+        if max_dq[max_head] < left:
+            max_head += 1
+        if min_dq[min_head] < left:
+            min_head += 1
+
+    window_len = right - left + 1
+    if window_len > best_len:
+        best_len = window_len
+        best_start = left
+
+print(best_len, best_start + 1)
